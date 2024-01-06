@@ -59,6 +59,11 @@ def update():
 
     actor_correct_location(luigi)
 
+    # enemy section:
+    enemy.x += -5
+    enemy.y += 5
+    actor_correct_location(enemy)
+
 
 WIDTH = 1280
 HEIGHT = 720
