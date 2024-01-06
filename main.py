@@ -15,6 +15,8 @@ def reset_actors():
     A method for reset every actors (execute by pgzrun.go())
     :return:
     """
+    global timer
+    timer = 120
     mario.score = luigi.score = 0
     mario.speed = luigi.speed = 5
     mario.power = luigi.power = False
@@ -115,6 +117,7 @@ def actor_correct_location(actor):
 
 def draw():
     """A method for drawing anything with any change (execute by pgzrun.go())"""
+    global status, timeout_flag
     if status == "home":
         mode.screen.blit("home", (0, 0))
         box1 = pygame.Rect((0, 0), (600, 70))
@@ -139,6 +142,8 @@ def draw():
                               color="yellow", fontsize=40, gcolor="red", scolor="black", shadow=(1, 1), alpha=0.8)
         mode.screen.draw.text("luigi score: " + str(luigi.score), (1060, 10),
                               color="yellow", fontsize=40, gcolor="red", scolor="black", shadow=(1, 1), alpha=0.8)
+        mode.screen.draw.text("Timer: " + str(round(timer)), (WIDTH//2 - 100, 10),
+                              color="yellow", fontsize=60, gcolor="red", scolor="black", shadow=(1, 1), alpha=0.8)
     elif status == "mario_win":
         mode.screen.blit("mario_win", (0, 0))
         mode.screen.draw.text("mario score: " + str(mario.score), topleft=(10, 10), fontsize=50, color="blue",
@@ -156,9 +161,15 @@ def draw():
                               scolor="black", shadow=(1, 1), alpha=0.9)
     elif status == "end":
         mode.screen.blit("end", (0, 0))
+    elif status == "timeout":
+        mode.screen.fill((247, 41, 166))
+        mode.screen.draw.text("Timeout", center=(WIDTH//2, HEIGHT//2), fontsize=120, color="black")
+        if timeout_flag:
+            sounds.timeout.play()
+            timeout_flag = False
 
 
-def quite_func():
+def quit_func():
     """
     A method for existing from game (execute by pgzrun.go())
     :return:
@@ -187,7 +198,7 @@ def on_key_down():
         mode.screen.surface = pygame.display.set_mode((WIDTH, HEIGHT))
     elif keyboard.escape:
         status = "end"
-        clock.schedule(quite_func, 3)
+        clock.schedule(quit_func, 3)
     elif keyboard.c:
         quit()
 
@@ -197,8 +208,12 @@ def update():
     A method for updating and refresh 60 times per second (execute by pgzrun.go())
     :return:
     """
-    global status
+    global status, timer
     if status == "play":
+        timer -= 1/60
+        if timer < 0:
+            status = "timeout"
+
         # mario section:
         if keyboard.right:
             mario.x += mario.speed
@@ -251,6 +266,8 @@ def update():
 
 WIDTH = 1280
 HEIGHT = 720
+timer = 120
+timeout_flag = True
 status = "home"
 mode = sys.modules["__main__"]
 
