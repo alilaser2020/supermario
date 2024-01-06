@@ -1,7 +1,7 @@
 
 # pygame zero
 
-A project written for Super Mario game with *pygame* library and it's very usefull package *'pgzero'* and also their modules (like *pgzrun*)
+A project written for Super Mario game with *pygame* library and it's very useful package *'pgzero'* and also their modules (like *pgzrun*)
 
 
 ## Install
