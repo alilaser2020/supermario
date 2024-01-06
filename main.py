@@ -1,8 +1,10 @@
-import random
 import sys
-
 import pgzrun
+import random
+import pygame.display
+
 from pgzero import clock
+from ctypes import windll
 from pgzero.actor import Actor
 from pgzero.keyboard import keyboard
 from pgzero.loaders import sounds
@@ -20,6 +22,7 @@ def reset_actors():
     random_location(enemy)
     random_location(mushroom)
     random_location(coin)
+    random_location(coin_2)
 
 
 def reset_mario_speed():
@@ -40,17 +43,18 @@ def reset_luigi_speed():
     luigi.power = False
 
 
-def collide_coin(actor):
+def collide_coin(actor, condicate_coin):
     """
     A method for when each actor collide with coin, it's score was increase (execute by pgzrun.go())
     :param actor:
+    :param condicate_coin:
     :return:
     """
     global status
-    if actor.colliderect(coin):
+    if actor.colliderect(condicate_coin):
         sounds.jiring.play()
-        actor.score += coin.point
-        random_location(coin)
+        actor.score += condicate_coin.point
+        random_location(condicate_coin)
         if actor.score >= 100 and actor == mario:
             status = "mario_win"
         if actor.score >= 100 and actor == luigi:
@@ -102,6 +106,7 @@ def draw():
         luigi.draw()
         enemy.draw()
         coin.draw()
+        coin_2.draw()
         mushroom.draw()
         mode.screen.draw.text("mario score: " + str(mario.score), (10, 10),
                               color="yellow", fontsize=40, gcolor="red", scolor="black", shadow=(1, 1), alpha=0.8)
@@ -148,11 +153,15 @@ def on_key_down():
     elif keyboard.p and status != "play":
         status = "play"
         reset_actors()
+    elif keyboard.f:
+        mode.screen.surface = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
+    elif keyboard.n:
+        mode.screen.surface = pygame.display.set_mode((WIDTH, HEIGHT))
     elif keyboard.escape:
         status = "end"
         clock.schedule(quite_func, 3)
     elif keyboard.c:
-        quit()
+        sys.exit(0)
 
 
 def update():
@@ -180,7 +189,8 @@ def update():
             print(f"mario power: {mario.power}")
             clock.schedule_unique(reset_mario_speed, 5)
             random_location(mushroom)
-        collide_coin(mario)
+        collide_coin(mario, coin)
+        collide_coin(mario, coin_2)
         actor_correct_location(mario)
 
         # luigi section:
@@ -201,7 +211,8 @@ def update():
             print(f"luigi power: {luigi.power}")
             clock.schedule_unique(reset_luigi_speed, 5)
             random_location(mushroom)
-        collide_coin(luigi)
+        collide_coin(luigi, coin)
+        collide_coin(luigi, coin_2)
         actor_correct_location(luigi)
 
         # enemy section:
@@ -216,6 +227,8 @@ status = "home"
 mode = sys.modules["__main__"]
 
 # define background:
+hwnd = pygame.display.get_wm_info()["window"]
+windll.user32.MoveWindow(hwnd, 330, 150, WIDTH, HEIGHT, False)  # Depends on the device screen site
 background = Actor("back")
 
 # define mario actor:
@@ -243,6 +256,11 @@ enemy.y_dir = enemy.speed
 coin = Actor("coin")
 random_location(coin)
 coin.point = 10
+
+# define coin:
+coin_2 = Actor("coin2")
+random_location(coin_2)
+coin_2.point = 20
 
 # Define mushroom:
 mushroom = Actor("mushroom")
