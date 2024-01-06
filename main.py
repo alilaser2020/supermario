@@ -46,10 +46,15 @@ def collide_coin(actor):
     :param actor:
     :return:
     """
+    global status
     if actor.colliderect(coin):
         sounds.jiring.play()
         actor.score += coin.point
         random_location(coin)
+        if actor.score >= 100 and actor == mario:
+            status = "mario_win"
+        if actor.score >= 100 and actor == luigi:
+            status = "luigi_win"
 
 
 def random_location(actor):
@@ -100,8 +105,22 @@ def draw():
         mushroom.draw()
         mode.screen.draw.text("mario score: " + str(mario.score), (10, 10),
                               color="yellow", fontsize=40, gcolor="red", scolor="black", shadow=(1, 1), alpha=0.8)
-        mode.screen.draw.text("luigi score: " + str(luigi.score), (1050, 10),
+        mode.screen.draw.text("luigi score: " + str(luigi.score), (1060, 10),
                               color="yellow", fontsize=40, gcolor="red", scolor="black", shadow=(1, 1), alpha=0.8)
+    elif status == "mario_win":
+        mode.screen.blit("mario_win", (0, 0))
+        mode.screen.draw.text("mario score: " + str(mario.score), topleft=(10, 10), fontsize=50, color="blue", gcolor="green",
+                              scolor="red", shadow=(1, 1), alpha=0.9)
+        mode.screen.draw.text("luigi score: " + str(luigi.score), topleft=(1050, 10), fontsize=40, color="blue",
+                              gcolor="green",
+                              scolor="black", shadow=(1, 1), alpha=0.9)
+    elif status == "luigi_win":
+        mode.screen.blit("luigi_win", (0, 0))
+        mode.screen.draw.text("mario score: " + str(mario.score), topleft=(10, 10), fontsize=40, color="blue"
+                              , gcolor="orange", scolor="red", shadow=(1, 1), alpha=0.9)
+        mode.screen.draw.text("luigi score: " + str(luigi.score), topleft=(1030, 10), fontsize=50, color="blue",
+                              gcolor="orange",
+                              scolor="black", shadow=(1, 1), alpha=0.9)
     elif status == "end":
         mode.screen.blit("end", (0, 0))
 
