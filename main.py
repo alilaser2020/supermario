@@ -5,6 +5,37 @@ import pgzrun
 from pgzero import clock
 from pgzero.actor import Actor
 from pgzero.keyboard import keyboard
+from pgzero.loaders import sounds
+
+
+def reset_mario_speed():
+    """
+    A method for reset speed of mario (execute by pgzrun.go())
+    :return:
+    """
+    mario.speed = 5
+    mario.power = False
+
+
+def reset_luigi_speed():
+    """
+    A method for reset speed of mario (execute by pgzrun.go())
+    :return:
+    """
+    luigi.speed = 5
+    luigi.power = False
+
+
+def collide_coin(actor):
+    """
+    A method for when each actor collide with coin, it's score was increase (execute by pgzrun.go())
+    :param actor:
+    :return:
+    """
+    if actor.colliderect(coin):
+        sounds.jiring.play()
+        actor.score += coin.point
+        random_location(coin)
 
 
 def random_location(actor):
@@ -18,8 +49,8 @@ def random_location(actor):
 
 
 def enemy_random_direction():
-    enemy.x_dir = random.randint(-5, 5)
-    enemy.y_dir = random.randint(-5, 5)
+    enemy.x_dir = random.randint(-enemy.speed, enemy.speed)
+    enemy.y_dir = random.randint(-enemy.speed, enemy.speed)
     if enemy.x_dir > 0:
         enemy.image = "enemy_right"
     else:
@@ -49,10 +80,11 @@ def draw():
     luigi.draw()
     enemy.draw()
     coin.draw()
-    mode.screen.draw.text("mario score: " + str(mario.score), (10, 30),
-                          color="yellow", fontsize=30)
-    mode.screen.draw.text("luigi score: " + str(luigi.score), (1100, 30),
-                          color="yellow", fontsize=30)
+    mushroom.draw()
+    mode.screen.draw.text("mario score: " + str(mario.score), (10, 10),
+                          color="yellow", fontsize=40, gcolor="red", scolor="black", shadow=(1, 1), alpha=0.8)
+    mode.screen.draw.text("luigi score: " + str(luigi.score), (1050, 10),
+                          color="yellow", fontsize=40, gcolor="red", scolor="black", shadow=(1, 1), alpha=0.8)
 
 
 def update():
@@ -62,34 +94,44 @@ def update():
     """
     # mario section:
     if keyboard.right:
-        mario.x += 5
+        mario.x += mario.speed
         mario.image = "mario_right"
     if keyboard.left:
-        mario.x -= 5
+        mario.x -= mario.speed
         mario.image = "mario_left"
     if keyboard.up:
-        mario.y -= 5
+        mario.y -= mario.speed
     if keyboard.down:
-        mario.y += 5
-    if mario.colliderect(coin):
-        mario.score += coin.point
-        random_location(coin)
+        mario.y += mario.speed
+    if mario.colliderect(mushroom):
+        sounds.speed.play()
+        mario.speed = mushroom.speed
+        mario.power = True
+        print(f"mario power: {mario.power}")
+        clock.schedule_unique(reset_mario_speed, 5)
+        random_location(mushroom)
+    collide_coin(mario)
     actor_correct_location(mario)
 
     # luigi section:
     if keyboard.d:
-        luigi.x += 5
+        luigi.x += luigi.speed
         luigi.image = "luigi_right"
     if keyboard.a:
-        luigi.x -= 5
+        luigi.x -= luigi.speed
         luigi.image = "luigi_left"
     if keyboard.w:
-        luigi.y -= 5
+        luigi.y -= luigi.speed
     if keyboard.s:
-        luigi.y += 5
-    if luigi.colliderect(coin):
-        luigi.score += coin.point
-        random_location(coin)
+        luigi.y += luigi.speed
+    if luigi.colliderect(mushroom):
+        sounds.speed.play()
+        luigi.speed = mushroom.speed
+        luigi.power = True
+        print(f"luigi power: {luigi.power}")
+        clock.schedule_unique(reset_luigi_speed, 5)
+        random_location(mushroom)
+    collide_coin(luigi)
     actor_correct_location(luigi)
 
     # enemy section:
@@ -109,21 +151,32 @@ background = Actor("back")
 mario = Actor("mario_right")
 random_location(mario)
 mario.score = 0
+mario.speed = 5
+mario.power = False
 
 # define luigi actor:
 luigi = Actor("luigi_right")
 random_location(luigi)
 luigi.score = 0
+luigi.speed = 5
+luigi.power = False
 
 # define enemy actor:
 enemy = Actor("enemy_left")
 random_location(enemy)
-enemy.x_dir = 2
-enemy.y_dir = 2
+enemy.speed = 7
+enemy.x_dir = enemy.speed
+enemy.y_dir = enemy.speed
 clock.schedule_interval(enemy_random_direction, 4)
 
 # define coin:
 coin = Actor("coin")
 random_location(coin)
 coin.point = 10
+
+# Define mushroom:
+mushroom = Actor("mushroom")
+random_location(mushroom)
+mushroom.speed = 12
+
 pgzrun.go()
