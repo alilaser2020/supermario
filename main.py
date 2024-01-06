@@ -29,6 +29,16 @@ def update():
     if keyboard.down:
         mario.y += 5
 
+    # luigi section:
+    if keyboard.d:
+        luigi.x += 5
+    if keyboard.a:
+        luigi.x -= 5
+    if keyboard.w:
+        luigi.y -= 5
+    if keyboard.s:
+        luigi.y += 5
+
 
 WIDTH = 1280
 HEIGHT = 720
