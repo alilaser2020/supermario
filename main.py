@@ -17,6 +17,7 @@ def reset_actors():
     """
     mario.score = luigi.score = 0
     mario.speed = luigi.speed = 5
+    mario.power = luigi.power = False
     random_location(mario)
     random_location(luigi)
     random_location(enemy)
@@ -71,6 +72,22 @@ def random_location(actor):
     actor.y = random.randint(actor.height // 2, HEIGHT - actor.height // 2)
 
 
+def enemy_collide(actor):
+    """
+    A method for collide each actor (mario or luigi) with enemy and reset it's score (execute by pgzrun.go())
+    :param actor:
+    :return:
+    """
+    if actor.colliderect(enemy):
+        if actor.power:
+            sounds.win.play()
+            random_location(enemy)
+        else:
+            sounds.lose.play()
+            actor.score = 0
+            random_location(actor)
+
+
 def enemy_random_direction():
     enemy.x_dir = random.randint(-enemy.speed, enemy.speed)
     enemy.y_dir = random.randint(-enemy.speed, enemy.speed)
@@ -114,7 +131,8 @@ def draw():
                               color="yellow", fontsize=40, gcolor="red", scolor="black", shadow=(1, 1), alpha=0.8)
     elif status == "mario_win":
         mode.screen.blit("mario_win", (0, 0))
-        mode.screen.draw.text("mario score: " + str(mario.score), topleft=(10, 10), fontsize=50, color="blue", gcolor="green",
+        mode.screen.draw.text("mario score: " + str(mario.score), topleft=(10, 10), fontsize=50, color="blue",
+                              gcolor="green",
                               scolor="red", shadow=(1, 1), alpha=0.9)
         mode.screen.draw.text("luigi score: " + str(luigi.score), topleft=(1050, 10), fontsize=40, color="blue",
                               gcolor="green",
@@ -161,7 +179,7 @@ def on_key_down():
         status = "end"
         clock.schedule(quite_func, 3)
     elif keyboard.c:
-        sys.exit(0)
+        quit()
 
 
 def update():
@@ -186,12 +204,12 @@ def update():
             sounds.speed.play()
             mario.speed = mushroom.speed
             mario.power = True
-            print(f"mario power: {mario.power}")
             clock.schedule_unique(reset_mario_speed, 5)
             random_location(mushroom)
         collide_coin(mario, coin)
         collide_coin(mario, coin_2)
         actor_correct_location(mario)
+        enemy_collide(mario)
 
         # luigi section:
         if keyboard.d:
@@ -208,12 +226,12 @@ def update():
             sounds.speed.play()
             luigi.speed = mushroom.speed
             luigi.power = True
-            print(f"luigi power: {luigi.power}")
             clock.schedule_unique(reset_luigi_speed, 5)
             random_location(mushroom)
         collide_coin(luigi, coin)
         collide_coin(luigi, coin_2)
         actor_correct_location(luigi)
+        enemy_collide(luigi)
 
         # enemy section:
         enemy.x += enemy.x_dir
