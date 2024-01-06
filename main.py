@@ -46,6 +46,7 @@ def draw():
     mario.draw()
     luigi.draw()
     enemy.draw()
+    coin.draw()
 
 
 def update():
@@ -64,6 +65,8 @@ def update():
         mario.y -= 5
     if keyboard.down:
         mario.y += 5
+    if mario.colliderect(coin):
+        random_location(coin)
     actor_correct_location(mario)
 
     # luigi section:
@@ -77,6 +80,8 @@ def update():
         luigi.y -= 5
     if keyboard.s:
         luigi.y += 5
+    if luigi.colliderect(coin):
+        random_location(coin)
     actor_correct_location(luigi)
 
     # enemy section:
@@ -88,18 +93,25 @@ def update():
 WIDTH = 1280
 HEIGHT = 720
 
+# define background:
 background = Actor("back")
+
+# define mario actor:
 mario = Actor("mario_right")
 random_location(mario)
 
+# define luigi actor:
 luigi = Actor("luigi_right")
 random_location(luigi)
 
+# define enemy actor:
 enemy = Actor("enemy_left")
 random_location(enemy)
 enemy.x_dir = 2
 enemy.y_dir = 2
-
 clock.schedule_interval(enemy_random_direction, 4)
 
+# define coin:
+coin = Actor("coin")
+random_location(coin)
 pgzrun.go()
