@@ -11,7 +11,7 @@ Required instructions for installation:
 
 **pip install pgzero**
 ## Main items
-There is a calss in actor module of pgzero *(pgzero.actor)* named *'Actor'* for define:
+There is a class in actor module of pgzero *(pgzero.actor)* named *'Actor'* for define:
 
 **from pgzero.actor import Actor**
 
@@ -25,9 +25,8 @@ When we used with *pgzero*, there are 2 main functions that very important and e
 A function for drawing any actor with any change
 
 2. **def update():**
-A function run 60 times per second for check, refresh and update position of actors
-
-Also we need import *pgzrun* package for run these 2 function and actully it is the backbone of program which acts like a *while True loop*:
+A function run 60 times per second for check, refresh and update position of actors,
+also we need import *pgzrun* package for run these 2 function, actually this module is the backbone of program which acts like a *while True loop*:
 
 **pgzrun.go()**
 
