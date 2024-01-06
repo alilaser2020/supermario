@@ -1,6 +1,17 @@
+import random
 import pgzrun
+from pgzero import clock
 from pgzero.actor import Actor
 from pgzero.keyboard import keyboard
+
+
+def enemy_random_direction():
+    enemy.x_dir = random.randint(-5, 5)
+    enemy.y_dir = random.randint(-5, 5)
+    if enemy.x_dir > 0:
+        enemy.image = "enemy_right"
+    else:
+        enemy.image = "enemy_left"
 
 
 def actor_correct_location(actor):
@@ -20,10 +31,7 @@ def actor_correct_location(actor):
 
 
 def draw():
-    """
-    A method for drawing anything with any change (execute by pgzrun.go())
-    :return:
-    """
+    """A method for drawing anything with any change (execute by pgzrun.go())"""
     background.draw()
     mario.draw()
     luigi.draw()
@@ -46,7 +54,6 @@ def update():
         mario.y -= 5
     if keyboard.down:
         mario.y += 5
-
     actor_correct_location(mario)
 
     # luigi section:
@@ -60,12 +67,11 @@ def update():
         luigi.y -= 5
     if keyboard.s:
         luigi.y += 5
-
     actor_correct_location(luigi)
 
     # enemy section:
-    enemy.x += -5
-    enemy.y += 5
+    enemy.x += enemy.x_dir
+    enemy.y += enemy.y_dir
     actor_correct_location(enemy)
 
 
@@ -74,17 +80,19 @@ HEIGHT = 720
 
 background = Actor("back")
 mario = Actor("mario_right")
-luigi = Actor("luigi_right")
-enemy = Actor("enemy_left")
-
 mario.x = WIDTH // 2
 mario.y = HEIGHT // 2
 
+luigi = Actor("luigi_right")
 luigi.x = 90
 luigi.y = 550
 
+enemy = Actor("enemy_right")
 enemy.x = 1100
 enemy.y = 591
+enemy.x_dir = 2
+enemy.y_dir = 2
 
+clock.schedule_interval(enemy_random_direction, 4)
 
 pgzrun.go()
