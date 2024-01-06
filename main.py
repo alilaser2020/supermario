@@ -5,6 +5,16 @@ from pgzero.actor import Actor
 from pgzero.keyboard import keyboard
 
 
+def random_location(actor):
+    """
+    A method for specify random location for each actor in page (execute by pgzrun.go())
+    :param actor:
+    :return:
+    """
+    actor.x = random.randint(actor.width // 2, WIDTH - actor.width // 2)
+    actor.y = random.randint(actor.height // 2, HEIGHT - actor.height // 2)
+
+
 def enemy_random_direction():
     enemy.x_dir = random.randint(-5, 5)
     enemy.y_dir = random.randint(-5, 5)
@@ -70,7 +80,7 @@ def update():
     actor_correct_location(luigi)
 
     # enemy section:
-    enemy.x += enemy.x_dir
+    enemy.x -= enemy.x_dir
     enemy.y += enemy.y_dir
     actor_correct_location(enemy)
 
@@ -80,16 +90,13 @@ HEIGHT = 720
 
 background = Actor("back")
 mario = Actor("mario_right")
-mario.x = WIDTH // 2
-mario.y = HEIGHT // 2
+random_location(mario)
 
 luigi = Actor("luigi_right")
-luigi.x = 90
-luigi.y = 550
+random_location(luigi)
 
-enemy = Actor("enemy_right")
-enemy.x = 1100
-enemy.y = 591
+enemy = Actor("enemy_left")
+random_location(enemy)
 enemy.x_dir = 2
 enemy.y_dir = 2
 
