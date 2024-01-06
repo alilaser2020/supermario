@@ -117,6 +117,16 @@ def draw():
     """A method for drawing anything with any change (execute by pgzrun.go())"""
     if status == "home":
         mode.screen.blit("home", (0, 0))
+        box1 = pygame.Rect((0, 0), (600, 70))
+        box1.center = (WIDTH//2, HEIGHT*0.876)
+        mode.screen.draw.filled_rect(box1, (255, 255, 0))
+        mode.screen.draw.text("Press space for play game", fontsize=65, center=(WIDTH//2, HEIGHT*0.876), color="blue",
+                              scolor="black", shadow=(1, 1))
+        box2 = pygame.Rect((0, 0), (600, 55))
+        box2.center = (WIDTH//2, HEIGHT*0.963)
+        mode.screen.draw.filled_rect(box2, (0, 255, 0))
+        mode.screen.draw.text("f: full screen, n: normal, p: play,\nh: home, Esc, c: exit", fontsize=40,
+                              center=(WIDTH//2, HEIGHT*0.963), color="black")
     elif status == "play":
         background.draw()
         mario.draw()
