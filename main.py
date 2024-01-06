@@ -38,8 +38,10 @@ def update():
     # mario section:
     if keyboard.right:
         mario.x += 5
+        mario.image = "mario_right"
     if keyboard.left:
         mario.x -= 5
+        mario.image = "mario_left"
     if keyboard.up:
         mario.y -= 5
     if keyboard.down:
@@ -50,8 +52,10 @@ def update():
     # luigi section:
     if keyboard.d:
         luigi.x += 5
+        luigi.image = "luigi_right"
     if keyboard.a:
         luigi.x -= 5
+        luigi.image = "luigi_left"
     if keyboard.w:
         luigi.y -= 5
     if keyboard.s:
