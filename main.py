@@ -1,4 +1,6 @@
 import random
+import sys
+
 import pgzrun
 from pgzero import clock
 from pgzero.actor import Actor
@@ -47,6 +49,10 @@ def draw():
     luigi.draw()
     enemy.draw()
     coin.draw()
+    mode.screen.draw.text("mario score: " + str(mario.score), (10, 30),
+                          color="yellow", fontsize=30)
+    mode.screen.draw.text("luigi score: " + str(luigi.score), (1100, 30),
+                          color="yellow", fontsize=30)
 
 
 def update():
@@ -67,7 +73,6 @@ def update():
         mario.y += 5
     if mario.colliderect(coin):
         mario.score += coin.point
-        print("mario score: ", mario.score)
         random_location(coin)
     actor_correct_location(mario)
 
@@ -84,7 +89,6 @@ def update():
         luigi.y += 5
     if luigi.colliderect(coin):
         luigi.score += coin.point
-        print("luigi score: ", luigi.score)
         random_location(coin)
     actor_correct_location(luigi)
 
@@ -96,6 +100,7 @@ def update():
 
 WIDTH = 1280
 HEIGHT = 720
+mode = sys.modules["__main__"]
 
 # define background:
 background = Actor("back")
