@@ -3,6 +3,22 @@ from pgzero.actor import Actor
 from pgzero.keyboard import keyboard
 
 
+def actor_correct_location(actor):
+    """
+    A method for avoidance out of page and detect correct location for each actor (execute by pgzrun.go())
+    :param actor:
+    :return:
+    """
+    if actor.x >= WIDTH + actor.width // 2:
+        actor.x = -actor.width // 2
+    if actor.x < -actor.width // 2:
+        actor.x = WIDTH + actor.width // 2
+    if actor.y >= HEIGHT + actor.height // 2:
+        actor.y = -actor.height // 2
+    if actor.y < -actor.height // 2:
+        actor.y = HEIGHT + actor.height // 2
+
+
 def draw():
     """
     A method for drawing anything with any change (execute by pgzrun.go())
@@ -29,6 +45,8 @@ def update():
     if keyboard.down:
         mario.y += 5
 
+    actor_correct_location(mario)
+
     # luigi section:
     if keyboard.d:
         luigi.x += 5
@@ -38,6 +56,8 @@ def update():
         luigi.y -= 5
     if keyboard.s:
         luigi.y += 5
+
+    actor_correct_location(luigi)
 
 
 WIDTH = 1280
